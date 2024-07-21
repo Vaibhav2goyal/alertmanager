@@ -114,6 +114,7 @@ Load the docker image to the kind cluster:
     ```
 ### 7. Install kube-prometheus-stack with helm charts:
 Optional - This is for observability of the the service and also fires the alerts for the service
+
     ```sh
     helm upgrade --install kube-prometheus-stack  -f ./scripts/kube-prometheus-stack/values.yaml ./scripts/kube-prometheus-stack/ -n monitoring
     ```
