@@ -237,3 +237,58 @@ kubectl rollout restart deployment alertmanager-webhook -n monitoring
 
 Check your slack channel for the alerts that might be triggering from the kube-prometheus-stack implemetation. You will need a Slack API Token and Channel ID.
 
+You can also test the application by port-forwarding our application
+
+```
+kubectl port-forward svc/alertmanager-webhook 8080:8080 -n monitoring
+```
+
+Use this Json payload to test the route
+
+```json
+{
+    "receiver": "webhook-receiver",
+    "status": "firing",
+    "alerts": [
+        {
+            "status": "firing",
+            "labels": {
+                "alertname": "KubePodCrashLooping",
+                "cluster": "cluster-main",
+                "container": "rs-transformer",
+                "endpoint": "http",
+                "job": "kube-state-metrics",
+                "namespace": "customer",
+                "pod": "customer-rs-transformer-9b75b488c-cpfd7",
+                "priority": "P0",
+                "prometheus": "monitoring/kube-prometheus-stack-prometheus",
+                "region": "us-west-1",
+                "replica": "0",
+                "service":"kube-prometheus-stack-kube-state-metrics",
+                "severity": "CRITICAL"
+            },
+            "annotations": {
+                "description": "Pod customer/customer-rs-transformer-9b75b488c-cpfd7 (rs-transformer) is restarting 2.11 times / 1 minutes.",
+                "summary": "Pod is crash looping."
+            },
+            "startsAt": "2024-07-21T14:12:37.988Z",
+            "endsAt": "0001-01-01T00:00:00Z",
+            "generatorURL": "http://kube-prometheus-stack-prometheus.monitoring:9090/",
+        }
+    ],
+    "groupLabels": {
+        "namespace": "customer"
+    },
+    "commonLabels": {
+        "namespace": "customer",
+        "prometheus": "monitoring/kube-prometheus-stack-prometheus"
+    },
+    "commonAnnotations": {},
+    "externalURL": "http://kube-prometheus-stack-alertmanager.monitoring:9093",
+    "version": "4",
+    "groupKey": "{}:{namespace=\"customer\"}",
+    "truncatedAlerts": 0
+}
+
+```
+
