@@ -103,6 +103,7 @@ You can also use any other cluster of your choice but kind is recommended for no
 
 ### 5. Load the Image
 Load the docker image to the kind cluster:
+   
     ```sh
     kind load docker-image alertmanager-webhook:latest --name alertmanager
     ```
