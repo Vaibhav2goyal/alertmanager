@@ -221,3 +221,18 @@ helm upgrade --install kube-prometheus-stack  -f ./scripts/kube-prometheus-stack
     ```
 
 
+### Test Slack channel
+
+Check your slack channel for the alerts that might be triggering from the kube-prometheus-stack implemetation. You will need a Slack API Token and Channel ID.
+
+### Apply New changes
+
+After making the changes in your code you have to load the image again to kind cluster. If you are using a artifact repository just change the image in   ```scripts/deployment.yaml```.
+
+### Restart the deployment
+
+Restart or update the deployment to see your new changes.
+
+```
+kubectl rollout restart deployment alertmanager-webhook -n monitoring
+```
