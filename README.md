@@ -4,8 +4,13 @@
 
 This project is an Alert Manager that handles incoming alerts with any payload in an JSON format, enriches them with additional data, and takes actions based on the data. New types of handlers, enrichment and actions can be easily added with the interface.
 
-## Structure
+## 📜 Prerequisites
+To easily use it you should have docker, kubectl and helm installed on your machine to run the application.
 
+---
+
+## 📄 Code Structure
+```
 alertmanager/
 ├── main.go
 ├── handlers/
@@ -28,22 +33,59 @@ alertmanager/
 └── go.sum
 └── Dockerfile
 
+```
+
+- **main.go**
+
+This contains main function which initialize the gin server. We load the env here and handle the routes.
+
+- **handlers/Handler.go**
+
+This file is used to intiate the handler package which handles the route /alerting and processes the webhook payload then process the alert according to its alertName. 
+
+- **enrichments/Enrichment.go**
+
+This file is used to initiates the enrichment package and uses enrichment interface to process other enrichments with the Enrich function
+
+- **actions/action.go**
+
+This file is being used to the actions package which after enriching data in the previous step can send the alert to multiple notification channels. We need to handle which action we want to use in handler file.
+
+- **handlers package**
+
+This package is used to handle additional alerts that need to be configured. Check Adding a New Handler section to add a new handler alert
+
+- **enrichments package**
+
+This package is used to add enrichments additional data to the alert. Check Adding a New Enrichment section to add a new Enrichment.
+
+- **actions package**
+
+This package is used to add actions for the alerts. Check Adding a New Alert section to add a new Alert
+
+---
 
 ## Setup
 
-1. Clone the repository:
+### 1. Clone the repository:
     ```sh
-    git clone <repository_url>
+    git clone git@github.com:Vaibhav2goyal/alertmanager.git
     cd alertmanager
     ```
 
-2. Set environment variables for Slack integration and Prometheus url in .env file :
-    
+### 2. Create a .env file
+ Set environment variables for Slack integration and Prometheus url in .env file :
+
+    ```
     SLACK_API_TOKEN=your-slack-token
     SLACK_CHANNEL_ID=your-slack-channel-id
     PrometheusURL=http://kube-prometheus-stack-prometheus:9090
 
-3. Install kind cluster(Macos) and create a cluster:
+    ```
+
+### 3. Install kind cluster(MacOs) and create a cluster:
+You can also use any other cluster of your choice but kind is recommended for now.        
+
     ```sh
     brew install kind
 
@@ -52,25 +94,27 @@ alertmanager/
     kubectl config use-context kind-alertmanager
     ```
 
-4. Build a Docker Image for alertmanager-webhook:
+### 4. Build a Docker Image for alertmanager-webhook:
     ```sh
 
     docker build -t alertmanager-webhook . 
     
     ```
 
-5. Load the docker image to the kind cluster:
+### 5. Load the Image
+Load the docker image to the kind cluster:
     ```sh
     kind load docker-image alertmanager-webhook:latest --name alertmanager
     ```
 
-6. Apply the alertmanager-webhook manifest to deploy the application:
+### 6. Apply the alertmanager-webhook manifest to deploy the application:
     ```sh
-    kubectl apply -f ./scripts/deployment.yaml  
+    kubectl apply -f ./scripts/deployment.yaml  -n monitoring
     ```
-7. Install kube-prometheus-stack with helm charts:
+### 7. Install kube-prometheus-stack with helm charts:
+Optional - This is for observability of the the service and also fires the alerts for the service
     ```sh
-    helm upgrade --install kube-prometheus-stack  -f ./scripts/kube-prometheus-stack/values.yaml ./scripts/kube-prometheus-stack/ 
+    helm upgrade --install kube-prometheus-stack  -f ./scripts/kube-prometheus-stack/values.yaml ./scripts/kube-prometheus-stack/ -n monitoring
     ```
 
     
@@ -178,9 +222,5 @@ alertmanager/
         // other code...
     
     ```
-
-## Testing
-
-You can test the implementation by sending a POST request to the `/alerting` endpoint with a sample alert payload.
 
 
