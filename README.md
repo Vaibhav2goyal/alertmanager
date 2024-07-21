@@ -68,7 +68,7 @@ This package is used to add actions for the alerts. Check Adding a New Alert sec
 ## Setup
 
 ### 1. Clone the repository:
-    ```sh
+    ```
     git clone git@github.com:Vaibhav2goyal/alertmanager.git
     cd alertmanager
     ```
@@ -80,42 +80,37 @@ This package is used to add actions for the alerts. Check Adding a New Alert sec
     SLACK_API_TOKEN=your-slack-token
     SLACK_CHANNEL_ID=your-slack-channel-id
     PrometheusURL=http://kube-prometheus-stack-prometheus:9090
-
     ```
 
 ### 3. Install kind cluster(MacOs) and create a cluster:
 You can also use any other cluster of your choice but kind is recommended for now.        
 
-    ```sh
+    ```
     brew install kind
-
     kind create cluster --name alertmanager  
-
     kubectl config use-context kind-alertmanager
     ```
 
 ### 4. Build a Docker Image for alertmanager-webhook:
-    ```sh
-
+    ```
     docker build -t alertmanager-webhook . 
-    
     ```
 
 ### 5. Load the Image
 Load the docker image to the kind cluster:
    
-    ```sh
+    ```
     kind load docker-image alertmanager-webhook:latest --name alertmanager
     ```
 
 ### 6. Apply the alertmanager-webhook manifest to deploy the application:
-    ```sh
+    ```
     kubectl apply -f ./scripts/deployment.yaml  -n monitoring
     ```
 ### 7. Install kube-prometheus-stack with helm charts:
 Optional - This is for observability of the the service and also fires the alerts for the service
 
-    ```sh
+    ```
     helm upgrade --install kube-prometheus-stack  -f ./scripts/kube-prometheus-stack/values.yaml ./scripts/kube-prometheus-stack/ -n monitoring
     ```
 
