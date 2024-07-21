@@ -1,5 +1,6 @@
 package models
 
+// Alert struct for a single alert
 type Alert struct {
 	Annotations map[string]string `json:"annotations"`
 	Labels      map[string]string `json:"labels"`
@@ -7,6 +8,7 @@ type Alert struct {
 	Status      string            `json:"status"`
 }
 
+// Parsing the payload from the webhook
 type WebhookPayload struct {
 	Receiver          string            `json:"receiver"`
 	Status            string            `json:"status"`

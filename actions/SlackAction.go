@@ -11,11 +11,12 @@ import (
 type SlackAction struct{}
 
 func (a SlackAction) Execute(alert models.Alert) {
-
+	// Send a slack alert
 	sendToSlack(alert)
 }
 
 func sendToSlack(alert models.Alert) {
+	// Get the slack token and channel ID
 	token := os.Getenv("SLACK_API_TOKEN")
 	channelID := os.Getenv("SLACK_CHANNEL_ID")
 	api := slack.New(token)
@@ -52,7 +53,7 @@ func sendToSlack(alert models.Alert) {
 			Short: true,
 		})
 	}
-
+	//Add preview text
 	previewText := fmt.Sprintf(
 		"*Alert Summary:* %s\n",
 		alert.Annotations["summary"],
@@ -63,7 +64,7 @@ func sendToSlack(alert models.Alert) {
 		Fields:  fields,
 		Color:   "#FF0000", // Red color to indicate critical alert
 	}
-
+	//Post the message to slack
 	_, _, err := api.PostMessage(channelID, slack.MsgOptionText(previewText, false), slack.MsgOptionAttachments(attachment))
 	if err != nil {
 		fmt.Println("Error sending message to Slack:", err)

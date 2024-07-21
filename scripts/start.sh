@@ -3,8 +3,8 @@
 set -a
 
 
-    echo "Starting the Alertmanager - $(date)"
-
-    source /app/.env
-    
-    /app/alertmanager
+echo "Starting the Alertmanager - $(date)"
+##Source the variables
+source /app/.env
+##Start the application
+/app/alertmanager

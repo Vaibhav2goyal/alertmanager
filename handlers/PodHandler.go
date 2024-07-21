@@ -32,10 +32,12 @@ func handleHighCPUUsage(alert models.Alert) {
 	enrichments.RegisterEnrichment(enrichments.DefaultEnrichment{})
 
 	enrichments.RegisterEnrichment(enrichments.ResourceEnrichment{PrometheusURL: os.Getenv("PROMETHEUS_URL")})
-
+	// Enrich alert data
 	enrichedData := enrichments.EnrichData(alert)
 
+	// Register actions specific to High cpu alerts
 	actions.RegisterAction(actions.SlackAction{})
 
+	// Take all the  registered actions
 	actions.TakeAction(enrichedData)
 }

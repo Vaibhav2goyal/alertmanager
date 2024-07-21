@@ -13,6 +13,7 @@ type ResourceEnrichment struct {
 	PrometheusURL string
 }
 
+// Prometheus response structure for getting the values
 type PrometheusResponse struct {
 	Status string `json:"status"`
 	Data   struct {
@@ -30,19 +31,19 @@ func (e ResourceEnrichment) Enrich(alert models.Alert) models.Alert {
 	if podName == "" || namespace == "" {
 		return alert
 	}
-
+	//Getting the additonal mertics
 	cpuUsage, memoryUsage := e.getPodMetrics(podName, namespace)
-	fmt.Println(cpuUsage)
-	fmt.Println(memoryUsage)
 	alert.Labels["cpu_usage"] = cpuUsage
 	alert.Labels["memory_usage"] = memoryUsage
 	return alert
 }
 
 func (e ResourceEnrichment) getPodMetrics(podName, namespace string) (string, string) {
+	//PromQL query to get the cpu usage
 	cpuQuery := fmt.Sprintf(`sum(rate(container_cpu_usage_seconds_total{namespace="%s", pod="%s"}[5m]))`, namespace, podName)
+	//PromQL query to get the memory usage
 	memoryQuery := fmt.Sprintf(`sum(container_memory_usage_bytes{namespace="%s", pod="%s"})`, namespace, podName)
-
+	//Getting CPU and memory usage with query created above
 	cpuUsage := e.queryPrometheus(cpuQuery)
 	memoryUsage := e.queryPrometheus(memoryQuery)
 
@@ -50,6 +51,7 @@ func (e ResourceEnrichment) getPodMetrics(podName, namespace string) (string, st
 }
 
 func (e ResourceEnrichment) queryPrometheus(query string) string {
+	//Encoding the query properly
 	encodedQuery := url.QueryEscape(query)
 	fullURL := fmt.Sprintf("%s/api/v1/query?query=%s", e.PrometheusURL, encodedQuery)
 

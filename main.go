@@ -15,5 +15,6 @@ func main() {
 	r := gin.Default()
 	//Handling the /alerting route
 	r.POST("/alerting", handlers.HandleAlerts)
+	//Running on 8080 port
 	r.Run(":8080")
 }
